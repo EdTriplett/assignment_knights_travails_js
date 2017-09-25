@@ -1,7 +1,7 @@
 class Queue {
   constructor() {
     this.queue = [];
-
+// adds new items to lowest index
     this.enqueue = item => {
       let newQ = [item];
       for (let i = 0; i < this.queue.length; i++) {
@@ -9,7 +9,7 @@ class Queue {
       }
       this.queue = newQ;
     };
-
+// takes next item from highest index
     this.dequeue = () => {
       let i = 0;
       let result = [];
