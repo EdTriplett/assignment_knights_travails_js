@@ -1,5 +1,5 @@
 class Move {
-	constructor(x, y, depth, children, parent) {
+	constructor(x, y, depth, children=[], parent) {
 		this.x = x;
 		this.y = y;
 		this.depth = depth;
@@ -12,22 +12,25 @@ class Move {
 // 2nd is maxDepth of tree
 class MoveTree {
 	constructor(coordinates, maxDepth) {
-		this.root = new Move(coordinates[0], coordinates[1], 0, null, null);
-		for (let i = 0; i < maxDepth; i++) {
-			this._crawler(this.root);
-		}
+		this.maxDepth = maxDepth
+		this.root = new Move(coordinates[0], coordinates[1], 0, [], null);
+//		for (let i = 0; i < maxDepth; i++) {
+			this._buildTree();
+//		}
 	}
 
-	_crawlerRecursive(move = null) {
+	_buildTreeRecursive(move = null) {
 		if (move === null) {
 			move = this.root;
 		}
 	}
 
-	_crawler(move = this.root) {
+	_buildTree(move = this.root) {
+		if (move.depth === this.maxDepth) return 
 		let movesArr = this._createMoves(move);
 		movesArr.forEach((m, i) => {
-			move[i] = m;
+			move.children[i] = m;
+			this._buildTree(m)
 		});
 	}
 
@@ -35,17 +38,17 @@ class MoveTree {
 		let x = move.x;
 		let y = move.y;
 
-		let moveOne = new Move(x + 2, y + 1, move.depth + 1, null, move);
-		let moveTwo = new Move(x + 2, y - 1, move.depth + 1, null, move);
+		let moveOne = new Move(x + 2, y + 1, move.depth + 1, [], move);
+		let moveTwo = new Move(x + 2, y - 1, move.depth + 1, [], move);
 
-		let moveThree = new Move(x + 1, y + 2, move.depth + 1, null, move);
-		let moveFour = new Move(x - 1, y + 2, move.depth + 1, null, move);
+		let moveThree = new Move(x + 1, y + 2, move.depth + 1, [], move);
+		let moveFour = new Move(x - 1, y + 2, move.depth + 1, [], move);
 
-		let moveFive = new Move(x - 2, y + 1, move.depth + 1, null, move);
-		let moveSix = new Move(x - 2, y - 1, move.depth + 1, null, move);
+		let moveFive = new Move(x - 2, y + 1, move.depth + 1, [], move);
+		let moveSix = new Move(x - 2, y - 1, move.depth + 1, [], move);
 
-		let moveSeven = new Move(x - 1, y - 2, move.depth + 1, null, move);
-		let moveEight = new Move(x + 1, y - 2, move.depth + 1, null, move);
+		let moveSeven = new Move(x - 1, y - 2, move.depth + 1, [], move);
+		let moveEight = new Move(x + 1, y - 2, move.depth + 1, [], move);
 
 		return [
 			moveOne,
@@ -59,3 +62,6 @@ class MoveTree {
 		].filter(m => m.x > 0 && m.y > 0);
 	}
 }
+let moveTree = new MoveTree([6, 0], 2)
+console.log(moveTree)
+console.log(moveTree.root.children[0])
