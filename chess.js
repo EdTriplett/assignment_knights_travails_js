@@ -1,4 +1,5 @@
 const Queue = require('./queue');
+const Stack = require('./stack')
 
 class Move {
 	constructor(x, y, depth, children = [], parent) {
@@ -90,7 +91,7 @@ class KnightSearcher {
 			if (node.parent === null) {
 				nodesCoordinates.push([node.x, node.y]);
 				console.log(
-					`${nodesCoordinates.length - 1} Moves: ${nodesCoordinates.reverse()}`
+					`${nodesCoordinates.length - 1} Moves: ${nodesCoordinates.reverse().join('->')}`
 				);
 				return;
 			}
@@ -101,23 +102,30 @@ class KnightSearcher {
 
 		queue.enqueue(n);
 
-		while (queue.length > 0) {
+		while (queue.queue.length > 0) {
 			n = queue.dequeue();
-
+//			console.log('n= ',n)
 			if (n.x === coordinates[0] && n.y === coordinates[1]) {
+
 				traverseUp(n);
+			}
+
+			if (n.children) {
+				n.children.forEach(child=>{
+					queue.enqueue(child)
+				})
+				
 			}
 		}
 	}
+
+	dfsFor(targetCoords) {
+		
+	}
+
 }
 
 let moveTree = new MoveTree([6, 0], 2);
 moveTree.inspect();
-// console.log(moveTree.root.children[0])
-//
-// This tree has  22  nodes and a maximum depth of  2
-//
-//
-//
-//
-//
+let knightSearcher = new KnightSearcher(moveTree)
+knightSearcher.bfsFor([5,2])

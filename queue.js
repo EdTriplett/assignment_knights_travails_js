@@ -57,6 +57,6 @@ class Queue {
 //   }
 //   let newStr = newArr.join("");
 //   return newStr;
-};
+// };
 
 module.exports = Queue
