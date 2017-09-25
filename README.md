@@ -1,7 +1,7 @@
 # assignment_knights_travails_js
 Do not go gentle into that good knight.
 
-Bennie and Ed
+Benny and Ed
 
 What data structure is used to implement DFS?
 graph/tree
