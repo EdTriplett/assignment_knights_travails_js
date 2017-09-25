@@ -1,5 +1,5 @@
 const Queue = require('./queue');
-const Stack = require('./stack')
+const Stack = require('./stack');
 
 class Move {
 	constructor(x, y, depth, children = [], parent) {
@@ -19,6 +19,7 @@ class MoveTree {
 		this.root = new Move(coordinates[0], coordinates[1], 0, [], null);
 		//		for (let i = 0; i < maxDepth; i++) {
 		this.nodeCount = 1;
+		this.nodeArray = [[coordinates[0], coordinates[1]]];
 		this._buildTree();
 		//		}
 	}
@@ -43,6 +44,7 @@ class MoveTree {
 		let movesArr = this._createMoves(move);
 		movesArr.forEach((m, i) => {
 			this.nodeCount++;
+			this.nodeArray.push([m.x, m.y]);
 			move.children[i] = m;
 			this._buildTree(m);
 		});
@@ -73,7 +75,9 @@ class MoveTree {
 			moveSix,
 			moveSeven,
 			moveEight
-		].filter(m => m.x >= 0 && m.y >= 0 && m.x <= 7 && m.y <= 7);
+		]
+			.filter(m => m.x >= 0 && m.y >= 0 && m.x <= 7 && m.y <= 7)
+			.filter(m => !this.nodeArray.includes([m.x, m.y]));
 	}
 }
 
@@ -82,50 +86,85 @@ class KnightSearcher {
 		this.tree = tree;
 	}
 
+	_traverseUp(node, nodeArr) {
+		if (node.parent === null) {
+			nodeArr.push([node.x, node.y]);
+			console.log(
+				`${nodeArr.length - 1} Moves: ${nodeArr.reverse().join('->')}`
+			);
+			return;
+		}
+
+		nodeArr.push([node.x, node.y]);
+		this._traverseUp(node.parent, nodeArr);
+	}
+
 	bfsFor(coordinates) {
 		let queue = new Queue();
 		let nodesCoordinates = [];
 		let n = this.tree.root;
 
-		function traverseUp(node) {
-			if (node.parent === null) {
-				nodesCoordinates.push([node.x, node.y]);
-				console.log(
-					`${nodesCoordinates.length - 1} Moves: ${nodesCoordinates.reverse().join('->')}`
-				);
-				return;
-			}
-
-			nodesCoordinates.push([node.x, node.y]);
-			traverseUp(node.parent);
-		}
-
 		queue.enqueue(n);
 
 		while (queue.queue.length > 0) {
 			n = queue.dequeue();
-//			console.log('n= ',n)
 			if (n.x === coordinates[0] && n.y === coordinates[1]) {
-
-				traverseUp(n);
+				return this._traverseUp(n, nodesCoordinates);
 			}
 
 			if (n.children) {
-				n.children.forEach(child=>{
-					queue.enqueue(child)
-				})
-				
+				n.children.forEach(child => {
+					queue.enqueue(child);
+				});
 			}
 		}
 	}
 
-	dfsFor(targetCoords) {
-		
-	}
+	dfsFor(coordinates) {
+		let stack = new Stack();
+		let coordinatesArray = [];
+		let n = this.tree.root;
 
+		stack.push(n);
+
+		while (stack.stack.length > 0) {
+			n = stack.pop();
+
+			if (n.x === coordinates[0] && n.y === coordinates[1]) {
+				return this._traverseUp(n, coordinatesArray);
+			}
+
+			if (n.children) {
+				n.children.forEach(child => {
+					stack.push(child);
+				});
+			}
+		}
+	}
 }
 
-let moveTree = new MoveTree([6, 0], 2);
+let moveTree = new MoveTree([6, 0], 6);
 moveTree.inspect();
-let knightSearcher = new KnightSearcher(moveTree)
-knightSearcher.bfsFor([5,2])
+let knightSearcher = new KnightSearcher(moveTree);
+
+// knightSearcher.dfsFor([5, 2]);
+// knightSearcher.dfsFor([3, 5]);
+knightSearcher.bfsFor([3, 5]);
+
+for (let i = 0; i < 100; i++) {
+	for (let j = 0; j < 8; j++) {
+		for (let k = 0; k < 8; k++) {
+			knightSearcher.bfsFor([j, k]);
+		}
+	}
+}
+
+for (let i = 0; i < 100; i++) {
+	for (let j = 0; j < 8; j++) {
+		for (let k = 0; k < 8; k++) {
+			knightSearcher.dfsFor([j, k]);
+		}
+	}
+}
+
+// 4 Moves: 6,0->7,2->6,4->5,6->3,5

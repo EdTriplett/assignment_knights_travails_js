@@ -19,7 +19,7 @@ class Stack {
     };
 
     this.peek = () => {
-      return this.stack[this.stack.length - 1] || "nothing in stack";
+      return this.stack[this.stack.length - 1] || 'nothing in stack';
     };
 
     this.empty = () => {
@@ -54,6 +54,6 @@ class Stack {
 //   }
 //   let reversedStr = reversedArr.join("");
 //   return reversedStr;
-};
+// };
 
-module.exports = Stack
+module.exports = Stack;
