@@ -15,8 +15,13 @@ class MoveTree {
 		this.maxDepth = maxDepth
 		this.root = new Move(coordinates[0], coordinates[1], 0, [], null);
 //		for (let i = 0; i < maxDepth; i++) {
-			this._buildTree();
+		this.nodeCount = 1
+		this._buildTree();
 //		}
+	}
+
+	inspect() {
+		console.log("This tree has ", this.nodeCount, " nodes and a maximum depth of ", this.maxDepth)
 	}
 
 	_buildTreeRecursive(move = null) {
@@ -29,6 +34,7 @@ class MoveTree {
 		if (move.depth === this.maxDepth) return 
 		let movesArr = this._createMoves(move);
 		movesArr.forEach((m, i) => {
+			this.nodeCount++
 			move.children[i] = m;
 			this._buildTree(m)
 		});
@@ -59,9 +65,9 @@ class MoveTree {
 			moveSix,
 			moveSeven,
 			moveEight
-		].filter(m => m.x > 0 && m.y > 0);
+		].filter(m => m.x >= 0 && m.y >= 0 && m.x<=7 && m.y<=7);
 	}
 }
 let moveTree = new MoveTree([6, 0], 2)
-console.log(moveTree)
-console.log(moveTree.root.children[0])
+moveTree.inspect()
+// console.log(moveTree.root.children[0])
